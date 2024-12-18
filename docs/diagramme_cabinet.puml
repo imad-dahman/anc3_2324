@@ -1,0 +1,110 @@
+@startuml
+skinparam defaultFontName Consolas
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "Gestion de Cabinet Médical" {
+
+    class Patient {
+        +String nom
+        +String adresse
+        +List<String> allergies
+        +List<String> antécédentsMédicaux
+        +void enregistrerPatient()
+        +void mettreAJourPatient()
+    }
+
+    class Médecin {
+        +String nom
+        +String spécialité
+        +List<Patient> patients
+        +void consulterDossierMedical(Patient patient)
+        +void ajouterNoteConsultation(Patient patient, String note)
+    }
+
+    class Secrétaire {
+        +String nom
+        +void planifierRendezVous(Patient patient, Médecin médecin, Date date)
+        +void générerFacture(Patient patient, double montant)
+    }
+
+    class Administrateur {
+        +String nom
+        +void gérerAuthentification()
+        +void gérerSécurité()
+    }
+
+    class RendezVous {
+        +Date date
+        +Patient patient
+        +Médecin médecin
+        +void planifierRendezVous()
+        +void envoyerRappel()
+    }
+
+    class Facture {
+        +Patient patient
+        +double montant
+        +Date date
+        +void générerFacture()
+        +void marquerCommePayée()
+    }
+
+    class DossierMédical {
+        +Patient patient
+        +List<String> notesConsultation
+        +List<String> prescriptions
+        +List<String> résultatsExamens
+        +void ajouterNoteConsultation(String note)
+        +void ajouterPrescription(String prescription)
+        +void ajouterRésultatExamen(String résultat)
+    }
+
+    class Notification {
+        +String message
+        +Date date
+        +void envoyerNotification()
+    }
+
+    class TableauDeBord {
+        +void afficherIndicateursClés()
+        +void afficherCalendrier()
+    }
+
+    class SpécialitéMédicale {
+        +String nom
+        +List<Médecin> médecins
+        +void ajouterMédecin(Médecin médecin)
+    }
+
+    class Authentification {
+        +void authentifierUtilisateur()
+    }
+
+    class Sécurité {
+        +void gérerAccèsUtilisateur()
+    }
+
+    Patient "1" -- "0..*" RendezVous : planifie
+    Patient "1" -- "0..*" Facture : génère
+    Patient "1" -- "1" DossierMédical : possède
+
+    Médecin "1" -- "0..*" RendezVous : planifie
+    Médecin "1" -- "0..*" DossierMédical : consulte
+    Médecin "1" -- "0..*" SpécialitéMédicale : appartient à
+
+    Secrétaire "1" -- "0..*" RendezVous : planifie
+    Secrétaire "1" -- "0..*" Facture : génère
+
+    Administrateur "1" -- "1" Authentification : gère
+    Administrateur "1" -- "1" Sécurité : gère
+
+    RendezVous "1" -- "0..*" Notification : envoie
+    Facture "1" -- "0..*" Notification : envoie
+
+    Médecin "1" -- "1" TableauDeBord : consulte
+    Administrateur "1" -- "1" TableauDeBord : consulte
+}
+
+@enduml

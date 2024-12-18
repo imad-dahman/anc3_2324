@@ -1,0 +1,326 @@
+@startuml
+skinparam defaultFontName Consolas
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package javafx.* {
+    class Application
+    class Stage
+    class Scene {
+        Scene(Parent,\n  width: double,\n  height: double\n)
+    }
+    class BorderPane
+    class GridPane
+    class StackPane
+
+    Application -[hidden]-> Stage
+    Stage *-->  Scene
+    Scene -[hidden]- BorderPane
+    BorderPane -[hidden]- GridPane
+    GridPane -[hidden]- StackPane
+}
+package Sokoban {
+    class SokobanApp
+
+    Application <|-- SokobanApp
+}
+package Sokoban.ViewModel {
+
+abstract class BoardViewModel{
+- gridViewModel
+- board
++ BoardViewModel(Board)
+}
+class BoardViewModel4Design {
+- gridViewModel4Design
+- board4Design
+- BoardViewModel4Design(board4Design)
+}
+class BoardViewModel4Play{
+- gridViewModel4Play
+- board4Play
+- BoardViewModel4Play(board4Play)
+}
+abstract class CellViewModel {
+
+}
+class CellViewModel4Design {
++ CellViewModel4Design(int line, int col, Board board)
+- line : int
+- col : int
+- Board4Design
++ move : void
++ isListChangedProperty() : BooleanProperty
+}
+class CellViewModel4Play {
++ CellViewModel4Play(int line, int col, Board board)
+- line : int
+- col : int
+- Board4Play
++ play() : void
++ isListChangedProperty() : BooleanProperty
++ removeElement() : void
+}
+abstract class GridViewModel {
+- board
++ GridViewModel(Board board)
+}
+class GridViewModel4Design {
+- board4Design
++ GridViewModel4Design(board4Design)
++ gridWidth() : int
++ gridHeight() : int
++ getCellViewModel4Design(int line, int col)
+}
+class GridViewModel4Play {
+- board4Play
++ GridViewModel4Play(board4Play)
++ gridWidth() : int
++ gridHeight() : int
++ getCellViewModel4Play(int line, int col)
+}
+}
+
+package Sokoban.View {
+class FileMenuView {
+    - boardViewModel: BoardViewModel
+    + FileMenuView(Stage , BoardViewModel)
+    + showNewGameDialog(stage: Stage): void
+}
+abstract class BoardView {
+    - boardViewModel: BoardViewModel
+    - GRID_WIDTH: int
+    - GRID_HEIGHT: int
+    + BoardView(primaryStage: Stage, boardViewModel: BoardViewModel)
+}
+class BoardView4Design {
+    - boardViewModel4Design: BoardViewModel4Design
+    - GRID_WIDTH: int
+    - GRID_HEIGHT: int
+    + BoardView4Design(primaryStage: Stage, boardViewModel4Design: BoardViewModel4Design)
+}
+class BoardView4Play {
+    - boardViewModel4Play: BoardViewModel4Play
+    - GRID_WIDTH: int
+    - GRID_HEIGHT: int
+    + BoardView4Play(primaryStage: Stage, boardViewModel4Play: BoardViewModel4Play)
+}
+abstract class GridView {
+    - board: Board
+    + GridView(gridViewModel: GridViewModel, gridWidth: DoubleBinding, gridHeight: DoubleBinding)
+    + gridWidth(): int
+    + gridHeight(): int
+    + getCellViewModel(line: int, col: int): CellViewModel
+}
+class GridView4Design {
+    + GridView4Design(gridViewModel4Design: GridViewModel4Design, gridWidth: DoubleBinding, gridHeight: DoubleBinding)
+
+}
+class GridView4Play {
+    + GridView4Play(gridViewModel4Play: GridViewModel4Play, gridWidth: DoubleBinding, gridHeight: DoubleBinding)
+
+}
+abstract class CellView {
+    + CellView( cellWidthProperty: DoubleBinding)
+}
+class CellView4Design {
+- CellViewModel4Design viewModel
+    + CellView(getCellViewModel4Design: CellViewModel4Design, cellWidthProperty: DoubleBinding)
+}
+class CellView4Play {
+- CellViewModel4Play viewModel
+    + CellView(getCellViewModel4Play: CellViewModel4Play, cellWidthProperty: DoubleBinding)
+}
+}
+package Sokoban.Model {
+
+abstract class Board {
++ Board()
+}
+class Board4Design {
+- ObjectProperty<Grid4Design> grid
+-  MAX_FILLED_CELLS : IntegerBinding
+-  isFull : BooleanBinding
+-  isChanged : BooleanProperty
++ removeElement()
++ play ()
++ teleport()
++ isListChangedProperty ()
++ putElement ()
++ save ()
++ open ()
+
+}
+class Board4Play {
+- ObjectProperty<Grid4Play> grid
+-  isChanged : BooleanProperty
++ move()
++ isListChangedProperty ()
+
+}
+ abstract class Grid {
+-  gridColumns : IntegerProperty
+-  gridRows : IntegerProperty
+-   matrix : Cell[][]
+-  gridChangedProperty : BooleanProperty
+
+}
+class Grid4Design {
+-  filledCellsCount : LongBinding
++ play()
++ save()
++ open ()
+}
+class Grid4Play {
+- moveProperty
+- totalPushedOnTargetProperty
+- movesCounterProperty
+- numberOfBallsInGrid
+- numberOfBoxOnCible
++ moveCrate
++ move
+}
+abstract class Cell {
+-  value : ObjectProperty<TreeSet<Element>>
+- isListChanged : BooleanProperty
++ isEmpty() : bool
++ addElement() : void
++ getElement() : Element
++ removeElement() : void
++ getValue() : TreeSet<Element>
++  valueProperty() : ReadOnlyObjectProperty<TreeSet<Element>>
+}
+class Cell4Design {}
+class Cell4Play {}
+
+abstract class Element {
+    - type: ElementType
+    +  ElementType getType(): ElementType
+     {abstract} + ElementType getElement();
+}
+
+class Joueur {
+-  xPosition :IntegerProperty
+-  yPosition :IntegerProperty
++  setxPosition(x): void
++  setyPosition(y): void
++  getXPosition() : int
++  getYPosition() : int
++ ElementType getElement();
+}
+class Terrain {
++ ElementType getElement();
+}
+class Caisse {
+- id
++ ElementType getElement();
+}
+class Cible {
++ ElementType getElement();
+}
+class Mur {
++ ElementType getElement();
+}
+}
+SokobanApp ..> "1" Scene : <<create>>
+SokobanApp *-l-> "1" Stage
+Scene *--> "1" BoardView
+BorderPane <|-r- BoardView
+ BorderPane <|-r- FileMenuView
+GridPane <|-r- GridView
+StackPane <|-r- CellView
+
+SokobanApp ..> Board : <<create>>
+SokobanApp ..> BoardViewModel : <<create>>
+SokobanApp ..> BoardView : <<create>>
+
+
+
+
+
+BoardViewModel *--> GridViewModel
+BoardViewModel4Design *--> GridViewModel4Design
+BoardViewModel4Play *--> GridViewModel4Play
+
+BoardViewModel ..> GridViewModel : <<create>>
+BoardViewModel4Design ..> GridViewModel4Design : <<create>>
+BoardViewModel4Play ..> GridViewModel4Play : <<create>>
+
+BoardViewModel *--> Board
+BoardViewModel4Design *--> Board4Design
+BoardViewModel4Play *--> Board4Play
+
+
+BoardView *-- BoardViewModel
+BoardView4Design *-- BoardViewModel4Design
+BoardView4Play *-- BoardViewModel4Play
+
+CellViewModel *--> Board
+CellViewModel4Design *--> Board4Design
+CellViewModel4Play *--> Board4Play
+
+
+
+
+BoardView ..> GridView : <<create>>
+GridView ..> CellView : <<create>>
+GridView *- GridViewModel
+BoardViewModel --> FileMenuView
+GridViewModel *--> CellViewModel
+GridViewModel ..> CellViewModel : <<create>>
+GridViewModel *-->  Board
+CellView *- CellViewModel
+
+BoardView4Design ..> GridView4Design : <<create>>
+GridView4Design ..> CellView4Design : <<create>>
+GridView4Design *- GridViewModel4Design
+BoardViewModel4Design --> FileMenuView
+GridViewModel4Design *--> CellViewModel4Design
+GridViewModel4Design ..> CellViewModel4Design : <<create>>
+GridViewModel4Design *-->  Board4Design
+CellView4Design *- CellViewModel4Design
+
+BoardView4Play ..> GridView4Play : <<create>>
+GridView4Play ..> CellView4Play : <<create>>
+GridView4Play *- GridViewModel4Play
+GridViewModel4Play *--> CellViewModel4Play
+GridViewModel4Play ..> CellViewModel4Play : <<create>>
+GridViewModel4Play *-->  Board4Play
+CellView4Play *- CellViewModel4Play
+
+Grid *-->Cell
+Board *--> Grid
+
+Grid4Play *-->Cell4Play
+Grid4Design *--> Cell4Design
+Board4Play *--> Grid4Play
+Board4Design *--> Grid4Design
+BoardViewModel <|-- BoardViewModel4Design
+BoardViewModel <|-- BoardViewModel4Play
+CellViewModel <|-- CellViewModel4Design
+CellViewModel <|-- CellViewModel4Play
+GridViewModel <|-- GridViewModel4Design
+GridViewModel <|-- GridViewModel4Play
+BoardView <|-- BoardView4Design
+BoardView <|-- BoardView4Play
+Board <|-- Board4Design
+Board <|-- Board4Play
+CellView <|-- CellView4Design
+CellView <|-- CellView4Play
+Cell <|-- Cell4Design
+Cell <|-- Cell4Play
+GridView <|-- GridView4Design
+GridView <|-- GridView4Play
+Grid <|-- Grid4Design
+Grid <|-- Grid4Play
+
+Element <|-- Joueur
+Element <|-- Mur
+Element <|-- Terrain
+Element <|-- Caisse
+Element <|-- Cible
+
+}
+
+@enduml

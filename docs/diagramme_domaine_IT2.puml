@@ -1,0 +1,81 @@
+@startuml
+skinparam defaultFontName Consolas
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+abstract class Cell
+{
+- ListProperty<Element> : object
+addElement()
+removeElement()
+isEmpty() :  Boolean
+}
+
+abstract class Board
+{
+-BooleanBinding : isFull
+}
+
+abstract class Grid
+{
+-Cell : matrix
+-LongBinding : filledCellsCount
+}
+
+
+class Board4Design{
+}
+class Board4Play{
+}
+class Grid4Design{
+
+}
+class Grid4Play{
+
+}
+class Cell4Design{
+
+}
+class Cell4Play{
+
+}
+abstract class Element{
+-ElementType : type
+}
+
+class Terrain{}
+class Mur{}
+class Joueur{
+
+}
+class Caisse{}
+class Cible{}
+enum ElementType{
+terrain,mur,joueur,caisse,cible
+}
+
+
+Board <|-- Board4Design
+Board <|-- Board4Play
+
+Grid <|-- Grid4Design
+Grid <|-- Grid4Play
+
+Cell <|-- Cell4Design
+Cell <|-- Cell4Play
+
+Board4Play *-- Grid4Play
+Grid4Play *-- Cell4Play
+
+Board4Design *-- Grid4Design
+Grid4Design *-- Cell4Design
+Cell *-- Element
+
+Element <|-- Mur
+Element <|-- Joueur
+Element <|-- Caisse
+Element <|-- Cible
+Element <|-- Terrain
+Element "1" -right- "1" ElementType
+@enduml

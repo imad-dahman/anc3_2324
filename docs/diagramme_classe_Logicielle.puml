@@ -1,0 +1,51 @@
+@startuml
+skinparam defaultFontName Consolas
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+'hide attributes
+
+
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor Patient
+actor Médecin
+actor Secrétaire
+actor Administrateur
+package "Gestion de Cabine medical" {
+
+    usecase GestionPatients
+    usecase GestionRendezVous
+    usecase Facturation
+    usecase DossierMedical
+    usecase Notifications
+    usecase TableauDeBord
+    usecase GestionSpecialites
+    usecase Authentification
+    usecase Sécurité
+
+}
+Patient --> GestionRendezVous
+Patient --> Notifications
+Patient --> Facturation
+Patient --> DossierMedical
+
+ GestionPatients <-- Médecin
+ DossierMedical <-- Médecin
+ TableauDeBord <-- Médecin
+ GestionSpecialites <-- Médecin
+
+Secrétaire --> GestionPatients
+Secrétaire --> GestionRendezVous
+Secrétaire --> Facturation
+
+Administrateur --> Authentification
+Administrateur --> Sécurité
+Administrateur --> TableauDeBord
+
+@enduml
+
+
+

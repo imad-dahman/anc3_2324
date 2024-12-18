@@ -1,0 +1,42 @@
+@startuml
+
+class Board{
+-BooleanBinding : isFull
+}
+class Grid{
+-Cell : matrix
+-LongBinding : filledCellsCount
+}
+class Cell{
+- ListProperty<Element> : object
+addElement()
+removeElement()
+isEmpty() :  Boolean
+}
+abstract class Element{
+-ElementType : type
+}
+
+class Terrain{}
+class Mur{}
+class Joueur{
+
+}
+class Caisse{}
+class Cible{}
+enum ElementType{
+terrain,mur,joueur,caisse,cible
+}
+
+
+Board *-- Grid
+Grid *-- Cell
+Cell *-- Element
+Element <|-- Mur
+Element <|-- Joueur
+Element <|-- Caisse
+Element <|-- Cible
+Element <|-- Terrain
+Element "1" -right- "1" ElementType
+
+@enduml
